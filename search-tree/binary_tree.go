@@ -113,12 +113,13 @@ func (t *BinaryTree) Insert(key SearchKey, value StoredObject) InsertStatus {
 func (t *BinaryTree) Delete(key SearchKey) (StoredObject, DeleteStatus) {
 	var tmp, other, upper *BinaryTree
 	var value StoredObject
-	if t == nil {
+	if isEmpty(t) {
 		return nil, DeleteNone
 	}
 	if isLeaf(t) {
 		if t.key.EqualsTo(key) {
 			value = t.value
+			t.key = nil
 			t.value = nil
 			return value, DeleteOk
 		}
