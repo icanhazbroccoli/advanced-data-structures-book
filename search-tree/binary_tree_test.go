@@ -99,6 +99,214 @@ func TestBinaryTreeRotateRight(t *testing.T) {
 	}
 }
 
+func TestBinaryTreeFind(t *testing.T) {
+	tests := []struct {
+		tree         *BinaryTree
+		findKey      int
+		expectVal    interface{}
+		expectStatus bool
+	}{
+		{
+			tree:         NewBinaryTree(),
+			findKey:      42,
+			expectStatus: false,
+		},
+		{
+			tree: &BinaryTree{
+				key:   IntKey(42),
+				value: 43,
+			},
+			findKey:      42,
+			expectStatus: true,
+			expectVal:    43,
+		},
+		{
+			tree: &BinaryTree{
+				key:   IntKey(42),
+				value: 43,
+			},
+			findKey:      122,
+			expectStatus: false,
+		},
+		{
+			tree: &BinaryTree{
+				key: IntKey(2),
+				left: &BinaryTree{
+					key:   IntKey(1),
+					value: 11,
+				},
+				right: &BinaryTree{
+					key:   IntKey(2),
+					value: 22,
+				},
+			},
+			findKey:      2,
+			expectStatus: true,
+			expectVal:    22,
+		},
+		{
+			tree: &BinaryTree{
+				key: IntKey(2),
+				left: &BinaryTree{
+					key:   IntKey(1),
+					value: 11,
+				},
+				right: &BinaryTree{
+					key:   IntKey(2),
+					value: 22,
+				},
+			},
+			findKey:      1,
+			expectStatus: true,
+			expectVal:    11,
+		},
+		{
+			tree: &BinaryTree{
+				key: IntKey(2),
+				left: &BinaryTree{
+					key:   IntKey(1),
+					value: 11,
+				},
+				right: &BinaryTree{
+					key:   IntKey(2),
+					value: 22,
+				},
+			},
+			findKey:      3,
+			expectStatus: false,
+		},
+		{
+			tree: &BinaryTree{
+				key: IntKey(3),
+				left: &BinaryTree{
+					key: IntKey(2),
+					left: &BinaryTree{
+						key:   IntKey(1),
+						value: 11,
+					},
+					right: &BinaryTree{
+						key:   IntKey(2),
+						value: 22,
+					},
+				},
+				right: &BinaryTree{
+					key:   IntKey(3),
+					value: 33,
+				},
+			},
+			findKey:      1,
+			expectStatus: true,
+			expectVal:    11,
+		},
+		{
+			tree: &BinaryTree{
+				key: IntKey(3),
+				left: &BinaryTree{
+					key: IntKey(2),
+					left: &BinaryTree{
+						key:   IntKey(1),
+						value: 11,
+					},
+					right: &BinaryTree{
+						key:   IntKey(2),
+						value: 22,
+					},
+				},
+				right: &BinaryTree{
+					key:   IntKey(3),
+					value: 33,
+				},
+			},
+			findKey:      2,
+			expectStatus: true,
+			expectVal:    22,
+		},
+		{
+			tree: &BinaryTree{
+				key: IntKey(3),
+				left: &BinaryTree{
+					key: IntKey(2),
+					left: &BinaryTree{
+						key:   IntKey(1),
+						value: 11,
+					},
+					right: &BinaryTree{
+						key:   IntKey(2),
+						value: 22,
+					},
+				},
+				right: &BinaryTree{
+					key:   IntKey(3),
+					value: 33,
+				},
+			},
+			findKey:      2,
+			expectStatus: true,
+			expectVal:    22,
+		},
+		{
+			tree: &BinaryTree{
+				key: IntKey(3),
+				left: &BinaryTree{
+					key: IntKey(2),
+					left: &BinaryTree{
+						key:   IntKey(1),
+						value: 11,
+					},
+					right: &BinaryTree{
+						key:   IntKey(2),
+						value: 22,
+					},
+				},
+				right: &BinaryTree{
+					key:   IntKey(3),
+					value: 33,
+				},
+			},
+			findKey:      3,
+			expectStatus: true,
+			expectVal:    33,
+		},
+		{
+			tree: &BinaryTree{
+				key: IntKey(3),
+				left: &BinaryTree{
+					key: IntKey(2),
+					left: &BinaryTree{
+						key:   IntKey(1),
+						value: 11,
+					},
+					right: &BinaryTree{
+						key:   IntKey(2),
+						value: 22,
+					},
+				},
+				right: &BinaryTree{
+					key:   IntKey(3),
+					value: 33,
+				},
+			},
+			findKey:      4,
+			expectStatus: false,
+		},
+	}
+
+	for _, tt := range tests {
+		value, ok := tt.tree.Find(IntKey(tt.findKey))
+		if ok != FindStatus(tt.expectStatus) {
+			t.Errorf("unexpected find status: got=%t, want=%t",
+				ok, tt.expectStatus)
+		}
+		if ok == FindNone {
+			continue
+		}
+		if !reflect.DeepEqual(value, tt.expectVal) {
+			t.Errorf("unecpected find value: got=%v, want=%v",
+				value, tt.expectVal)
+		}
+	}
+}
+
 func TestBinaryTreeInsert(t *testing.T) {
 	tests := []struct {
 		insertKey    int

@@ -9,13 +9,13 @@ type SearchKey Comparable
 
 type StoredObject interface{}
 
-type FoundStatus bool
+type FindStatus bool
 type InsertStatus bool
 type DeleteStatus bool
 
 const (
-	FoundOk   FoundStatus = true
-	FoundNone             = false
+	FindOk   FindStatus = true
+	FindNone            = false
 )
 
 const (
@@ -32,7 +32,7 @@ type SearchTree interface {
 	RotateLeft()
 	RotateRight()
 
-	Find(SearchKey) (StoredObject, FoundStatus)
+	Find(SearchKey) (StoredObject, FindStatus)
 	Insert(SearchKey, StoredObject) InsertStatus
 	Delete(SearchKey) (StoredObject, DeleteStatus)
 }

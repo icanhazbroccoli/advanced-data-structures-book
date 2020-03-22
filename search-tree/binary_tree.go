@@ -18,6 +18,9 @@ func NewBinaryTree() *BinaryTree {
 }
 
 func (t *BinaryTree) RotateLeft() {
+	if isLeaf(t) {
+		return
+	}
 	tmpNode := t.left
 	tmpKey := t.key
 	t.left = t.right
@@ -29,6 +32,9 @@ func (t *BinaryTree) RotateLeft() {
 }
 
 func (t *BinaryTree) RotateRight() {
+	if isLeaf(t) {
+		return
+	}
 	tmpNode := t.right
 	tmpKey := t.key
 	t.right = t.left
@@ -39,9 +45,9 @@ func (t *BinaryTree) RotateRight() {
 	t.right.key = tmpKey
 }
 
-func (t *BinaryTree) Find(key SearchKey) (StoredObject, FoundStatus) {
-	if t.left == nil {
-		return nil, FoundNone
+func (t *BinaryTree) Find(key SearchKey) (StoredObject, FindStatus) {
+	if isEmpty(t) {
+		return nil, FindNone
 	}
 	tmp := t
 	for !isLeaf(tmp) {
@@ -52,9 +58,9 @@ func (t *BinaryTree) Find(key SearchKey) (StoredObject, FoundStatus) {
 		}
 	}
 	if tmp.key.EqualsTo(key) {
-		return tmp.value, FoundOk
+		return tmp.value, FindOk
 	}
-	return nil, FoundNone
+	return nil, FindNone
 }
 
 func isLeaf(t *BinaryTree) bool {
