@@ -15,21 +15,28 @@ func (s *LinkedListStack) Empty() bool {
 	return s.next == nil
 }
 
-func (s *LinkedListStack) Push(item Item) {
+func (s *LinkedListStack) Push(item Item) error {
 	tmp := &LinkedListStack{}
 	tmp.item = item
 	tmp.next = s.next
 	s.next = tmp
+	return nil
 }
 
-func (s *LinkedListStack) Pop() Item {
+func (s *LinkedListStack) Pop() (Item, error) {
+	if s.Empty() {
+		return nil, StackIsEmptyError
+	}
 	tmp := s.next
 	s.next = tmp.next
-	return tmp.item
+	return tmp.item, nil
 }
 
-func (s *LinkedListStack) Peek() Item {
-	return s.next.item
+func (s *LinkedListStack) Peek() (Item, error) {
+	if s.Empty() {
+		return nil, StackIsEmptyError
+	}
+	return s.next.item, nil
 }
 
 func (s *LinkedListStack) Traverse() []Item {

@@ -1,5 +1,7 @@
 package queue
 
+import "errors"
+
 type Item interface{}
 
 type Queue interface {
@@ -8,3 +10,10 @@ type Queue interface {
 	Dequeue() (Item, error)
 	Peek() (Item, error)
 }
+
+var (
+	QueueIsFullError = errors.New(
+		"queue has achieved it's max capacity")
+	QueueIsEmptyError = errors.New(
+		"queue is empty")
+)

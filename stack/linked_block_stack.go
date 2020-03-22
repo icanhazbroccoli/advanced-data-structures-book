@@ -20,7 +20,7 @@ func (s *LinkedBlockStack) Empty() bool {
 	return s.top == -1 && s.prev == nil
 }
 
-func (s *LinkedBlockStack) Push(item Item) {
+func (s *LinkedBlockStack) Push(item Item) error {
 	if s.top >= len(s.items)-1 {
 		prev := NewLinkedBlockStack()
 		prev.items = s.items
@@ -33,9 +33,13 @@ func (s *LinkedBlockStack) Push(item Item) {
 	}
 	s.top++
 	s.items[s.top] = item
+	return nil
 }
 
-func (s *LinkedBlockStack) Pop() Item {
+func (s *LinkedBlockStack) Pop() (Item, error) {
+	if s.Empty() {
+		return nil, StackIsEmptyError
+	}
 	item := s.items[s.top]
 	s.top--
 	if s.top == -1 && s.prev != nil {
@@ -43,11 +47,14 @@ func (s *LinkedBlockStack) Pop() Item {
 		s.top = s.prev.top
 		s.prev = s.prev.prev
 	}
-	return item
+	return item, nil
 }
 
-func (s *LinkedBlockStack) Peek() Item {
-	return s.items[s.top]
+func (s *LinkedBlockStack) Peek() (Item, error) {
+	if s.Empty() {
+		return nil, StackIsEmptyError
+	}
+	return s.items[s.top], nil
 }
 
 func (s *LinkedBlockStack) Traverse() [][]Item {

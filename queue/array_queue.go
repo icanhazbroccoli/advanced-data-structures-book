@@ -1,9 +1,5 @@
 package queue
 
-import (
-	"errors"
-)
-
 type ArrayQueue struct {
 	items []Item
 	front int
@@ -12,13 +8,6 @@ type ArrayQueue struct {
 }
 
 var _ Queue = (*ArrayQueue)(nil)
-
-var (
-	QueueIsFullError = errors.New(
-		"queue has achieved it's max capacity")
-	QueueIsEmptyError = errors.New(
-		"queue is empty")
-)
 
 func NewArrayQueue(size int) *ArrayQueue {
 	return &ArrayQueue{
