@@ -61,14 +61,16 @@ func isLeaf(t *BinaryTree) bool {
 	return t.left == nil
 }
 
+func isEmpty(t *BinaryTree) bool {
+	return isLeaf(t) && t.value == nil
+}
+
 func (t *BinaryTree) Insert(key SearchKey, value StoredObject) InsertStatus {
-	if t == nil {
-		return InsertNone
-	}
-	if isLeaf(t) {
+	if isEmpty(t) {
 		t.value = value
 		t.key = key
 		t.right = nil
+		return InsertOk
 	}
 	tmp := t
 	for !isLeaf(tmp) {
@@ -79,6 +81,7 @@ func (t *BinaryTree) Insert(key SearchKey, value StoredObject) InsertStatus {
 		}
 	}
 	if tmp.key.EqualsTo(key) {
+		tmp.value = value
 		return InsertNone
 	}
 	oldLeaf := &BinaryTree{
@@ -140,7 +143,9 @@ func (t *BinaryTree) Delete(key SearchKey) (StoredObject, DeleteStatus) {
 func (t *BinaryTree) Traverse() string {
 	var out bytes.Buffer
 
-	if isLeaf(t) {
+	if t == nil {
+		out.WriteString("nil")
+	} else if isLeaf(t) {
 		out.WriteString("(")
 		out.WriteString("leaf/")
 		out.WriteString(fmt.Sprintf("k:%v", t.key))
