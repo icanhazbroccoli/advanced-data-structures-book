@@ -23,3 +23,7 @@ func (i IntKey) EqualsTo(c Comparable) bool {
 	}
 	return i == i2
 }
+
+func (i IntKey) LessThanOrEqualsTo(c Comparable) bool {
+	return i.EqualsTo(c) || i.LessThan(c)
+}

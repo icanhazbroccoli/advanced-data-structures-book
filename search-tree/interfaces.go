@@ -3,6 +3,7 @@ package search_tree
 type Comparable interface {
 	LessThan(Comparable) bool
 	EqualsTo(Comparable) bool
+	LessThanOrEqualsTo(Comparable) bool
 }
 
 type SearchKey Comparable
@@ -29,10 +30,12 @@ const (
 )
 
 type SearchTree interface {
-	RotateLeft()
-	RotateRight()
-
 	Find(SearchKey) (StoredObject, FindStatus)
 	Insert(SearchKey, StoredObject) InsertStatus
 	Delete(SearchKey) (StoredObject, DeleteStatus)
+}
+
+type IntervalSearchTree interface {
+	SearchTree
+	FindInterval(SearchKey, SearchKey) []StoredObject
 }
