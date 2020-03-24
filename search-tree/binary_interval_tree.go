@@ -22,7 +22,7 @@ func (t *BinaryIntervalTree) FindInterval(a, b SearchKey) []StoredObject {
 	var node *BinaryTree
 	for len(stack) > 0 {
 		node, stack = stack[0], stack[1:]
-		if isLeaf(node) {
+		if node.isLeaf() {
 			if a.LessThanOrEqualsTo(node.key) && node.key.LessThan(b) {
 				res = append(res, node.value)
 			}

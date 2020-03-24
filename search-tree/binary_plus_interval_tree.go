@@ -5,47 +5,20 @@ import (
 	"fmt"
 )
 
-type BinaryTree struct {
+type BinaryPlusIntervalTree struct {
 	key         SearchKey
 	value       StoredObject
-	left, right *BinaryTree
+	left, right *BinaryPlusIntervalTree
+	next, prev  *BinaryPlusIntervalTree
 }
 
-var _ (SearchTree) = (*BinaryTree)(nil)
+var _ (IntervalSearchTree) = (*BinaryPlusIntervalTree)(nil)
 
-func NewBinaryTree() *BinaryTree {
-	return &BinaryTree{}
+func NewBinaryPlusIntervalTree() *BinaryPlusIntervalTree {
+	return &BinaryPlusIntervalTree{}
 }
 
-func (t *BinaryTree) RotateLeft() {
-	if t.isLeaf() {
-		return
-	}
-	tmpNode := t.left
-	tmpKey := t.key
-	t.left = t.right
-	t.key = t.right.key
-	t.right = t.left.right
-	t.left.right = t.left.left
-	t.left.left = tmpNode
-	t.left.key = tmpKey
-}
-
-func (t *BinaryTree) RotateRight() {
-	if t.isLeaf() {
-		return
-	}
-	tmpNode := t.right
-	tmpKey := t.key
-	t.right = t.left
-	t.key = t.left.key
-	t.left = t.right.left
-	t.right.left = t.right.right
-	t.right.right = tmpNode
-	t.right.key = tmpKey
-}
-
-func (t *BinaryTree) Find(key SearchKey) (StoredObject, FindStatus) {
+func (t *BinaryPlusIntervalTree) Find(key SearchKey) (StoredObject, FindStatus) {
 	if t.isEmpty() {
 		return nil, FindNone
 	}
@@ -63,7 +36,33 @@ func (t *BinaryTree) Find(key SearchKey) (StoredObject, FindStatus) {
 	return nil, FindNone
 }
 
-func (t *BinaryTree) Insert(key SearchKey, value StoredObject) InsertStatus {
+func (t *BinaryPlusIntervalTree) FindInterval(a, b SearchKey) []StoredObject {
+	res := []StoredObject{}
+	if t.isEmpty() {
+		return res
+	}
+	tmp := t
+	for !tmp.isLeaf() {
+		if tmp.key.LessThanOrEqualsTo(a) {
+			tmp = tmp.right
+		} else if b.LessThanOrEqualsTo(b) {
+			tmp = tmp.left
+		} else {
+			tmp = tmp.left
+		}
+	}
+	for tmp != nil {
+		if a.LessThanOrEqualsTo(tmp.key) && tmp.key.LessThan(b) {
+			res = append(res, tmp.value)
+		} else if b.LessThanOrEqualsTo(tmp.key) {
+			break
+		}
+		tmp = tmp.next
+	}
+	return res
+}
+
+func (t *BinaryPlusIntervalTree) Insert(key SearchKey, value StoredObject) InsertStatus {
 	if t.isEmpty() {
 		t.value = value
 		t.key = key
@@ -81,41 +80,50 @@ func (t *BinaryTree) Insert(key SearchKey, value StoredObject) InsertStatus {
 		tmp.value = value
 		return InsertNone
 	}
-	oldLeaf := &BinaryTree{
+	oldLeaf := &BinaryPlusIntervalTree{
 		key:   tmp.key,
 		value: tmp.value,
 	}
-	newLeaf := &BinaryTree{
+	newLeaf := &BinaryPlusIntervalTree{
 		key:   key,
 		value: value,
 	}
-	tmp.value = nil
 	if tmp.key.LessThan(key) {
 		tmp.left = oldLeaf
 		tmp.right = newLeaf
 		tmp.key = key
+		oldLeaf.prev = tmp.prev
+		oldLeaf.next = newLeaf
+		newLeaf.prev = oldLeaf
+		newLeaf.next = tmp.next
 	} else {
 		tmp.left = newLeaf
 		tmp.right = oldLeaf
+		newLeaf.prev = tmp.prev
+		newLeaf.next = oldLeaf
+		oldLeaf.prev = newLeaf
+		oldLeaf.next = tmp.next
 	}
+	tmp.next = nil
+	tmp.prev = nil
+
 	return InsertOk
 }
 
-func (t *BinaryTree) Delete(key SearchKey) (StoredObject, DeleteStatus) {
-	var tmp, other, upper *BinaryTree
-	var value StoredObject
+func (t *BinaryPlusIntervalTree) Delete(key SearchKey) (StoredObject, DeleteStatus) {
 	if t.isEmpty() {
 		return nil, DeleteNone
 	}
 	if t.isLeaf() {
 		if t.key.EqualsTo(key) {
-			value = t.value
+			value := t.value
 			t.key = nil
 			t.value = nil
 			return value, DeleteOk
 		}
 		return nil, DeleteNone
 	}
+	var tmp, other, upper *BinaryPlusIntervalTree
 	tmp = t
 	for !tmp.isLeaf() {
 		upper = tmp
@@ -134,11 +142,18 @@ func (t *BinaryTree) Delete(key SearchKey) (StoredObject, DeleteStatus) {
 	upper.value = other.value
 	upper.left = other.left
 	upper.right = other.right
-	value = tmp.value
+	if other.key.LessThan(tmp.key) {
+		upper.prev = other.prev
+		upper.next = tmp.next
+	} else {
+		upper.prev = tmp.prev
+		upper.next = other.next
+	}
+	value := tmp.value
 	return value, DeleteOk
 }
 
-func (t *BinaryTree) Traverse() string {
+func (t *BinaryPlusIntervalTree) Traverse() string {
 	var out bytes.Buffer
 
 	if t == nil {
@@ -149,6 +164,14 @@ func (t *BinaryTree) Traverse() string {
 		out.WriteString(fmt.Sprintf("k:%v", t.key))
 		out.WriteString("/")
 		out.WriteString(fmt.Sprintf("v:%v", t.value))
+		if t.prev != nil {
+			out.WriteString("/")
+			out.WriteString(fmt.Sprintf("%v<-", t.prev.key))
+		}
+		if t.next != nil {
+			out.WriteString("/")
+			out.WriteString(fmt.Sprintf("->%v", t.next.key))
+		}
 		out.WriteString(")")
 	} else {
 		out.WriteString("[")
@@ -163,10 +186,10 @@ func (t *BinaryTree) Traverse() string {
 	return out.String()
 }
 
-func (t *BinaryTree) isLeaf() bool {
+func (t *BinaryPlusIntervalTree) isLeaf() bool {
 	return t.left == nil
 }
 
-func (t *BinaryTree) isEmpty() bool {
+func (t *BinaryPlusIntervalTree) isEmpty() bool {
 	return t.isLeaf() && t.value == nil
 }
