@@ -96,6 +96,12 @@ func (t *BinaryPlusIntervalTree) Insert(key SearchKey, value StoredObject) Inser
 		oldLeaf.next = newLeaf
 		newLeaf.prev = oldLeaf
 		newLeaf.next = tmp.next
+		if oldLeaf.prev != nil {
+			oldLeaf.prev.next = oldLeaf
+		}
+		if newLeaf.next != nil {
+			newLeaf.next.prev = newLeaf
+		}
 	} else {
 		tmp.left = newLeaf
 		tmp.right = oldLeaf
@@ -103,6 +109,12 @@ func (t *BinaryPlusIntervalTree) Insert(key SearchKey, value StoredObject) Inser
 		newLeaf.next = oldLeaf
 		oldLeaf.prev = newLeaf
 		oldLeaf.next = tmp.next
+		if newLeaf.prev != nil {
+			newLeaf.prev.next = newLeaf
+		}
+		if oldLeaf.next != nil {
+			oldLeaf.next.prev = oldLeaf
+		}
 	}
 	tmp.next = nil
 	tmp.prev = nil
@@ -148,6 +160,12 @@ func (t *BinaryPlusIntervalTree) Delete(key SearchKey) (StoredObject, DeleteStat
 	} else {
 		upper.prev = tmp.prev
 		upper.next = other.next
+	}
+	if upper.prev != nil {
+		upper.prev.next = upper
+	}
+	if upper.next != nil {
+		upper.next.prev = upper
 	}
 	value := tmp.value
 	return value, DeleteOk
