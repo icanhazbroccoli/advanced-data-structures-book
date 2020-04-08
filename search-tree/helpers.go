@@ -60,6 +60,9 @@ func MakeTreeBottomUp(list *BinaryTree) *BinaryTree {
 }
 
 func MakeTreeTopDown(list *BinaryTree) *BinaryTree {
+	if list == nil {
+		return NewBinaryTree()
+	}
 	type stackItem struct {
 		node1, node2 *BinaryTree
 		number       int
