@@ -5,20 +5,27 @@ import (
 	"fmt"
 )
 
-type AVLTree struct {
+const (
+	Alpha   float64 = 0.288
+	Epsilon         = 0.005
+)
+
+type WeightBalancedTree struct {
 	key         SearchKey
 	value       StoredObject
-	left, right *AVLTree
-	height      int
+	left, right *WeightBalancedTree
+	weight      float64
 }
 
-var _ SearchTree = (*AVLTree)(nil)
+var _ SearchTree = (*WeightBalancedTree)(nil)
 
-func NewAVLTree() *AVLTree {
-	return &AVLTree{}
+func NewWeightBalancedTree() *WeightBalancedTree {
+	return &WeightBalancedTree{
+		weight: 0.0,
+	}
 }
 
-func (t *AVLTree) rotateLeft() {
+func (t *WeightBalancedTree) rotateLeft() {
 	if t.isLeaf() {
 		return
 	}
@@ -32,7 +39,7 @@ func (t *AVLTree) rotateLeft() {
 	t.left.key = tmpKey
 }
 
-func (t *AVLTree) rotateRight() {
+func (t *WeightBalancedTree) rotateRight() {
 	if t.isLeaf() {
 		return
 	}
@@ -46,7 +53,7 @@ func (t *AVLTree) rotateRight() {
 	t.right.key = tmpKey
 }
 
-func (t *AVLTree) Find(key SearchKey) (StoredObject, FindStatus) {
+func (t *WeightBalancedTree) Find(key SearchKey) (StoredObject, FindStatus) {
 	if t.isEmpty() {
 		return nil, FindNone
 	}
@@ -64,15 +71,15 @@ func (t *AVLTree) Find(key SearchKey) (StoredObject, FindStatus) {
 	return nil, FindNone
 }
 
-func (t *AVLTree) Insert(key SearchKey, value StoredObject) InsertStatus {
+func (t *WeightBalancedTree) Insert(key SearchKey, value StoredObject) InsertStatus {
 	if t.isEmpty() {
 		t.key = key
 		t.value = value
-		t.height = 0
+		t.weight = 1.0
 		return InsertOk
 	}
 	tmp := t
-	stack := []*AVLTree{}
+	stack := []*WeightBalancedTree{}
 	for !tmp.isLeaf() {
 		stack = append(stack, tmp)
 		if key.LessThan(tmp.key) {
@@ -85,15 +92,15 @@ func (t *AVLTree) Insert(key SearchKey, value StoredObject) InsertStatus {
 		tmp.value = value
 		return InsertNone
 	}
-	oldLeaf := &AVLTree{
-		key:    tmp.key,
+	oldLeaf := &WeightBalancedTree{
 		value:  tmp.value,
-		height: 0,
+		key:    tmp.key,
+		weight: 1.0,
 	}
-	newLeaf := &AVLTree{
-		key:    key,
+	newLeaf := &WeightBalancedTree{
 		value:  value,
-		height: 0,
+		key:    key,
+		weight: 1.0,
 	}
 	tmp.value = nil
 	if tmp.key.LessThan(key) {
@@ -104,15 +111,15 @@ func (t *AVLTree) Insert(key SearchKey, value StoredObject) InsertStatus {
 		tmp.left = newLeaf
 		tmp.right = oldLeaf
 	}
-	tmp.height = 1
+	tmp.weight = 2.0
 
 	t.rebalance(stack)
 
 	return InsertOk
 }
 
-func (t *AVLTree) Delete(key SearchKey) (StoredObject, DeleteStatus) {
-	var tmp, other, upper *AVLTree
+func (t *WeightBalancedTree) Delete(key SearchKey) (StoredObject, DeleteStatus) {
+	var tmp, other, upper *WeightBalancedTree
 	var value StoredObject
 	if t.isEmpty() {
 		return nil, DeleteNone
@@ -127,7 +134,7 @@ func (t *AVLTree) Delete(key SearchKey) (StoredObject, DeleteStatus) {
 		return nil, DeleteNone
 	}
 	tmp = t
-	stack := []*AVLTree{}
+	stack := []*WeightBalancedTree{}
 	for !tmp.isLeaf() {
 		stack = append(stack, tmp)
 		upper = tmp
@@ -146,7 +153,7 @@ func (t *AVLTree) Delete(key SearchKey) (StoredObject, DeleteStatus) {
 	upper.value = other.value
 	upper.left = other.left
 	upper.right = other.right
-	upper.height = 0
+	upper.weight = 1.0
 	value = tmp.value
 
 	t.rebalance(stack)
@@ -154,55 +161,7 @@ func (t *AVLTree) Delete(key SearchKey) (StoredObject, DeleteStatus) {
 	return value, DeleteOk
 }
 
-func (*AVLTree) rebalance(stack []*AVLTree) {
-	var tmp *AVLTree
-	for len(stack) > 0 {
-		var tmpHeight, oldHeight int
-		stack, tmp = stack[:len(stack)-1], stack[len(stack)-1]
-		if tmp.isLeaf() {
-			continue
-		}
-		oldHeight = tmp.height
-		if tmp.left.height-tmp.right.height == 2 {
-			if tmp.left.left.height-tmp.right.height == 1 {
-				tmp.rotateRight()
-				tmp.right.height = tmp.right.left.height + 1
-				tmp.height = tmp.right.height + 1
-			} else {
-				tmp.left.rotateLeft()
-				tmp.rotateRight()
-				tmpHeight = tmp.left.left.height
-				tmp.left.height = tmpHeight + 1
-				tmp.right.height = tmpHeight + 1
-				tmp.height = tmpHeight + 2
-			}
-		} else if tmp.left.height-tmp.right.height == -2 {
-			if tmp.right.right.height-tmp.left.height == 1 {
-				tmp.rotateLeft()
-				tmp.left.height = tmp.left.right.height + 1
-				tmp.height = tmp.left.height + 1
-			} else {
-				tmp.right.rotateRight()
-				tmp.rotateLeft()
-				tmpHeight = tmp.right.right.height
-				tmp.left.height = tmpHeight + 1
-				tmp.right.height = tmpHeight + 1
-				tmp.height = tmpHeight + 1
-			}
-		} else {
-			if tmp.left.height > tmp.right.height {
-				tmp.height = tmp.left.height + 1
-			} else {
-				tmp.height = tmp.right.height + 1
-			}
-		}
-		if tmpHeight == oldHeight {
-			break
-		}
-	}
-}
-
-func (t *AVLTree) Traverse() string {
+func (t *WeightBalancedTree) Traverse() string {
 	var out bytes.Buffer
 
 	if t == nil {
@@ -212,7 +171,7 @@ func (t *AVLTree) Traverse() string {
 		out.WriteString("leaf/")
 		out.WriteString(fmt.Sprintf("k:%v", t.key))
 		out.WriteString("/")
-		out.WriteString(fmt.Sprintf("h:%d", t.height))
+		out.WriteString(fmt.Sprintf("w:%.2f", t.weight))
 		out.WriteString("/")
 		out.WriteString(fmt.Sprintf("v:%v", t.value))
 		out.WriteString(")")
@@ -220,7 +179,7 @@ func (t *AVLTree) Traverse() string {
 		out.WriteString("[")
 		out.WriteString(fmt.Sprintf("k:%v", t.key))
 		out.WriteString("/")
-		out.WriteString(fmt.Sprintf("h:%d", t.height))
+		out.WriteString(fmt.Sprintf("w:%.2f", t.weight))
 		out.WriteString("/")
 		out.WriteString(fmt.Sprintf("l:%s", t.left.Traverse()))
 		out.WriteString("/")
@@ -231,10 +190,42 @@ func (t *AVLTree) Traverse() string {
 	return out.String()
 }
 
-func (t *AVLTree) isLeaf() bool {
+func (*WeightBalancedTree) rebalance(stack []*WeightBalancedTree) {
+	var tmp *WeightBalancedTree
+	for len(stack) > 0 {
+		stack, tmp = stack[:len(stack)-1], stack[len(stack)-1]
+		if tmp.isLeaf() {
+			continue
+		}
+		tmp.weight = tmp.left.weight + tmp.right.weight
+		if tmp.right.weight < Alpha*tmp.weight {
+			if tmp.left.left.weight > (Alpha+Epsilon)*tmp.weight {
+				tmp.rotateRight()
+				tmp.right.weight = tmp.right.left.weight + tmp.right.right.weight
+			} else {
+				tmp.left.rotateLeft()
+				tmp.rotateRight()
+				tmp.right.weight = tmp.right.left.weight + tmp.right.right.weight
+				tmp.left.weight = tmp.left.left.weight + tmp.left.right.weight
+			}
+		} else if tmp.left.weight < Alpha*tmp.weight {
+			if tmp.right.right.weight > (Alpha+Epsilon)*tmp.weight {
+				tmp.rotateLeft()
+				tmp.left.weight = tmp.left.left.weight + tmp.left.right.weight
+			} else {
+				tmp.right.rotateRight()
+				tmp.rotateLeft()
+				tmp.right.weight = tmp.right.right.weight + tmp.right.left.weight
+				tmp.left.weight = tmp.left.left.weight + tmp.left.right.weight
+			}
+		}
+	}
+}
+
+func (t *WeightBalancedTree) isLeaf() bool {
 	return t.left == nil
 }
 
-func (t *AVLTree) isEmpty() bool {
+func (t *WeightBalancedTree) isEmpty() bool {
 	return t.isLeaf() && t.value == nil
 }
