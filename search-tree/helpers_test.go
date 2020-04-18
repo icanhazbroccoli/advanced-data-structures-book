@@ -160,48 +160,48 @@ func TestMakeTreeTopDown(t *testing.T) {
 				},
 			},
 			expected: &BinaryTree{
-				key: IntKey(5),
+				key: IntKey(4),
 				left: &BinaryTree{
-					key: IntKey(3),
+					key: IntKey(2),
 					left: &BinaryTree{
-						key: IntKey(2),
+						key:   IntKey(1),
+						value: 11,
+					},
+					right: &BinaryTree{
+						key: IntKey(3),
 						left: &BinaryTree{
-							key:   IntKey(1),
-							value: 11,
-						},
-						right: &BinaryTree{
 							key:   IntKey(2),
 							value: 22,
 						},
-					},
-					right: &BinaryTree{
-						key: IntKey(4),
-						left: &BinaryTree{
+						right: &BinaryTree{
 							key:   IntKey(3),
 							value: 33,
-						},
-						right: &BinaryTree{
-							key:   IntKey(4),
-							value: 44,
 						},
 					},
 				},
 				right: &BinaryTree{
-					key: IntKey(7),
+					key: IntKey(6),
 					left: &BinaryTree{
-						key: IntKey(6),
+						key: IntKey(5),
 						left: &BinaryTree{
+							key:   IntKey(4),
+							value: 44,
+						},
+						right: &BinaryTree{
 							key:   IntKey(5),
 							value: 55,
 						},
-						right: &BinaryTree{
+					},
+					right: &BinaryTree{
+						key: IntKey(7),
+						left: &BinaryTree{
 							key:   IntKey(6),
 							value: 66,
 						},
-					},
-					right: &BinaryTree{
-						key:   IntKey(7),
-						value: 77,
+						right: &BinaryTree{
+							key:   IntKey(7),
+							value: 77,
+						},
 					},
 				},
 			},

@@ -92,8 +92,9 @@ func MakeTreeTopDown(list *BinaryTree) *BinaryTree {
 			current.node1.right = right.node1
 			stack = append([]stackItem{left, right}, stack...)
 		} else {
-			current.node1.left = list.left
+			current.node1.value = list.value
 			current.node1.key = list.key
+			current.node1.left = nil
 			current.node1.right = nil
 			if current.node2 != nil {
 				current.node2.key = list.key
