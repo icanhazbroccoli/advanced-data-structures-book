@@ -167,7 +167,7 @@ func (t *BinaryPlusIntervalTree) Delete(key SearchKey) (StoredObject, DeleteStat
 	return value, DeleteOk
 }
 
-func (t *BinaryPlusIntervalTree) Traverse() string {
+func (t *BinaryPlusIntervalTree) Inspect() string {
 	var out bytes.Buffer
 
 	if t == nil {
@@ -191,9 +191,9 @@ func (t *BinaryPlusIntervalTree) Traverse() string {
 		out.WriteString("[")
 		out.WriteString(fmt.Sprintf("k:%v", t.key))
 		out.WriteString("/")
-		out.WriteString(fmt.Sprintf("l:%s", t.left.Traverse()))
+		out.WriteString(fmt.Sprintf("l:%s", t.left.Inspect()))
 		out.WriteString("/")
-		out.WriteString(fmt.Sprintf("r:%s", t.right.Traverse()))
+		out.WriteString(fmt.Sprintf("r:%s", t.right.Inspect()))
 		out.WriteString("]")
 	}
 

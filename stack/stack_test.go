@@ -80,7 +80,7 @@ func TestLinkedListStack(t *testing.T) {
 				t.Errorf("unexpected value returned by operation %q: got: %#v, want: %#v", tt.cmd.kind, v, tt.expv)
 			}
 		}
-		if tr := s.Traverse(); !reflect.DeepEqual(tr, tt.expt) {
+		if tr := s.Inspect(); !reflect.DeepEqual(tr, tt.expt) {
 			t.Errorf("unexpected traversal: got: %#v, want: %#v", tr, tt.expt)
 		}
 	}
@@ -167,7 +167,7 @@ func TestLinkedBlockStack(t *testing.T) {
 				t.Errorf("unexpected value returned by operation %q: got: %#v, want: %#v", tt.cmd.kind, v, tt.expv)
 			}
 		}
-		tr := s.Traverse()
+		tr := s.Inspect()
 		if !reflect.DeepEqual(tr, tt.expt) {
 			t.Errorf("unexpected traversal: got: %#v, want: %#v", tr, tt.expt)
 		}
@@ -255,7 +255,7 @@ func TestDynamicStack(t *testing.T) {
 				t.Errorf("unexpected value returned by operation %q: got: %#v, want: %#v", tt.cmd.kind, v, tt.expv)
 			}
 		}
-		tr := s.Traverse()
+		tr := s.Inspect()
 		if !reflect.DeepEqual(tr, tt.expt) {
 			t.Errorf("unexpected traversal: got: %#v, want: %#v", tr, tt.expt)
 		}

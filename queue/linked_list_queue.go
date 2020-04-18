@@ -52,7 +52,7 @@ func (q *LinkedListQueue) Peek() (Item, error) {
 	return q.remove.item, nil
 }
 
-func (q *LinkedListQueue) Traverse() []Item {
+func (q *LinkedListQueue) Inspect() []Item {
 	res := make([]Item, 0)
 	tmp := q.remove
 	for tmp != nil {

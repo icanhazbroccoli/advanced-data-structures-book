@@ -39,7 +39,7 @@ func (s *LinkedListStack) Peek() (Item, error) {
 	return s.next.item, nil
 }
 
-func (s *LinkedListStack) Traverse() []Item {
+func (s *LinkedListStack) Inspect() []Item {
 	ptr := s.next
 	res := make([]Item, 0)
 	for ptr != nil {

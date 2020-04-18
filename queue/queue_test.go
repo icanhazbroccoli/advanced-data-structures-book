@@ -130,7 +130,7 @@ func TestArrayQueue(t *testing.T) {
 					t.Errorf("unexpected value returned by operation %q: got: %#v, want: %#v", tt.cmd.kind, v, tt.expv)
 				}
 			}
-			if tr := q.Traverse(); !reflect.DeepEqual(tr, tt.expt) {
+			if tr := q.Inspect(); !reflect.DeepEqual(tr, tt.expt) {
 				t.Errorf("unexpected traversal: got: %#v, want: %#v", tr, tt.expt)
 			}
 		}
@@ -243,7 +243,7 @@ func TestLinkedListQueue(t *testing.T) {
 					t.Errorf("unexpected value returned by operation %q: got: %#v, want: %#v", tt.cmd.kind, v, tt.expv)
 				}
 			}
-			if tr := q.Traverse(); !reflect.DeepEqual(tr, tt.expt) {
+			if tr := q.Inspect(); !reflect.DeepEqual(tr, tt.expt) {
 				t.Errorf("unexpected traversal: got: %#v, want: %#v", tr, tt.expt)
 			}
 		}
@@ -356,7 +356,7 @@ func TestCyclicListQueue(t *testing.T) {
 					t.Errorf("unexpected value returned by operation %q: got: %#v, want: %#v", tt.cmd.kind, v, tt.expv)
 				}
 			}
-			if tr := q.Traverse(); !reflect.DeepEqual(tr, tt.expt) {
+			if tr := q.Inspect(); !reflect.DeepEqual(tr, tt.expt) {
 				t.Errorf("unexpected traversal: got: %#v, want: %#v", tr, tt.expt)
 			}
 		}
@@ -469,7 +469,7 @@ func TestDoublyLinkedListQueue(t *testing.T) {
 					t.Errorf("unexpected value returned by operation %q: got: %#v, want: %#v", tt.cmd.kind, v, tt.expv)
 				}
 			}
-			if tr := q.Traverse(); !reflect.DeepEqual(tr, tt.expt) {
+			if tr := q.Inspect(); !reflect.DeepEqual(tr, tt.expt) {
 				t.Errorf("unexpected traversal: got: %#v, want: %#v", tr, tt.expt)
 			}
 		}

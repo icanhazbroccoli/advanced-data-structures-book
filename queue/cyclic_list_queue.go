@@ -48,7 +48,7 @@ func (q *CyclicListQueue) Peek() (Item, error) {
 	return q.next.next.next.item, nil
 }
 
-func (q *CyclicListQueue) Traverse() []Item {
+func (q *CyclicListQueue) Inspect() []Item {
 	res := make([]Item, 0)
 	start := q.next.next
 	ptr := start.next

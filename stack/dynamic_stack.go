@@ -79,6 +79,6 @@ func (s *DynamicStack) Peek() (Item, error) {
 	return s.items[s.size-1], nil
 }
 
-func (s *DynamicStack) Traverse() []Item {
+func (s *DynamicStack) Inspect() []Item {
 	return s.items[:s.size]
 }

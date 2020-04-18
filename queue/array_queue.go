@@ -47,7 +47,7 @@ func (q *ArrayQueue) Peek() (Item, error) {
 	return q.items[q.front], nil
 }
 
-func (q *ArrayQueue) Traverse() []Item {
+func (q *ArrayQueue) Inspect() []Item {
 	res := make([]Item, 0, len(q.items))
 	for i := q.front; i != q.rear; i = (i + 1) % q.size {
 		res = append(res, q.items[i])

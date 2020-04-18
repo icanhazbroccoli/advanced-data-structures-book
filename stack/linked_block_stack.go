@@ -57,7 +57,7 @@ func (s *LinkedBlockStack) Peek() (Item, error) {
 	return s.items[s.top], nil
 }
 
-func (s *LinkedBlockStack) Traverse() [][]Item {
+func (s *LinkedBlockStack) Inspect() [][]Item {
 	res := make([][]Item, 0, 1)
 	ptr := s
 	for ptr != nil {

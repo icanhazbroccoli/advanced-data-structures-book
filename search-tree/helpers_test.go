@@ -106,7 +106,7 @@ func TestMakeTreeBottomUp(t *testing.T) {
 		res := MakeTreeBottomUp(tt.input)
 		if !reflect.DeepEqual(res, tt.expected) {
 			t.Errorf("unexpected tree structure:\ngot= %s\nwant=%s",
-				res.Traverse(), tt.expected.Traverse())
+				res.Inspect(), tt.expected.Inspect())
 		}
 	}
 }
@@ -212,7 +212,7 @@ func TestMakeTreeTopDown(t *testing.T) {
 		res := MakeTreeTopDown(tt.input)
 		if !reflect.DeepEqual(res, tt.expected) {
 			t.Errorf("unexpected tree structure:\ngot= %s\nwant=%s",
-				res.Traverse(), tt.expected.Traverse())
+				res.Inspect(), tt.expected.Inspect())
 		}
 	}
 }

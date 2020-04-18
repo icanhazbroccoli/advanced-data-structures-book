@@ -47,7 +47,7 @@ func (q *DoublyLinkedListQueue) Peek() (Item, error) {
 	return q.prev.item, nil
 }
 
-func (q *DoublyLinkedListQueue) Traverse() []Item {
+func (q *DoublyLinkedListQueue) Inspect() []Item {
 	res := make([]Item, 0)
 	ptr := q.prev
 	for ptr != q {

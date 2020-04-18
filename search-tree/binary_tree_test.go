@@ -48,7 +48,7 @@ func TestBinaryTreeRotateLeft(t *testing.T) {
 
 	if !reflect.DeepEqual(tree, expected) {
 		t.Fatalf("unexpected rotate left state: got=%s, want=%s",
-			tree.Traverse(), expected.Traverse())
+			tree.Inspect(), expected.Inspect())
 	}
 }
 
@@ -95,7 +95,7 @@ func TestBinaryTreeRotateRight(t *testing.T) {
 
 	if !reflect.DeepEqual(tree, expected) {
 		t.Fatalf("unexpected rotate right state: got=%s, want=%s",
-			tree.Traverse(), expected.Traverse())
+			tree.Inspect(), expected.Inspect())
 	}
 }
 
@@ -421,7 +421,7 @@ func TestBinaryTreeInsert(t *testing.T) {
 
 		if !reflect.DeepEqual(tree, tt.expectTree) {
 			t.Errorf("unexpected tree state: got=%s, want: %s",
-				tree.Traverse(), tt.expectTree.Traverse())
+				tree.Inspect(), tt.expectTree.Inspect())
 		}
 	}
 }
@@ -615,7 +615,7 @@ func TestBinaryTreeDelete(t *testing.T) {
 
 		if !reflect.DeepEqual(tt.tree, tt.expectTree) {
 			t.Errorf("unexpected tree state: got=%s, want=%s",
-				tt.tree.Traverse(), tt.expectTree.Traverse())
+				tt.tree.Inspect(), tt.expectTree.Inspect())
 		}
 
 		if ok != DeleteOk {
