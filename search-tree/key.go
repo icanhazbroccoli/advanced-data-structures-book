@@ -1,6 +1,8 @@
 package search_tree
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type IntKey int64
 
@@ -26,4 +28,8 @@ func (i IntKey) EqualsTo(c Comparable) bool {
 
 func (i IntKey) LessThanOrEqualsTo(c Comparable) bool {
 	return i.EqualsTo(c) || i.LessThan(c)
+}
+
+func (i IntKey) String() string {
+	return fmt.Sprintf("%d", i)
 }
