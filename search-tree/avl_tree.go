@@ -202,7 +202,7 @@ func (*AVLTree) rebalance(stack []*AVLTree) {
 	}
 }
 
-func (t *AVLTree) Inspect() string {
+func (t *AVLTree) String() string {
 	var out bytes.Buffer
 
 	if t == nil {
@@ -222,9 +222,9 @@ func (t *AVLTree) Inspect() string {
 		out.WriteString("/")
 		out.WriteString(fmt.Sprintf("h:%d", t.height))
 		out.WriteString("/")
-		out.WriteString(fmt.Sprintf("l:%s", t.left.Inspect()))
+		out.WriteString(fmt.Sprintf("l:%s", t.left))
 		out.WriteString("/")
-		out.WriteString(fmt.Sprintf("r:%s", t.right.Inspect()))
+		out.WriteString(fmt.Sprintf("r:%s", t.right))
 		out.WriteString("]")
 	}
 

@@ -165,7 +165,7 @@ func TestAVLTreeInsert(t *testing.T) {
 
 		if !reflect.DeepEqual(tree, tt.expectTree) {
 			t.Errorf("unexpected tree state:\ngot=  %s\nwant= %s",
-				tree.Inspect(), tt.expectTree.Inspect())
+				tree, tt.expectTree)
 		}
 	}
 }
@@ -267,7 +267,7 @@ func TestAVLTreeDelete(t *testing.T) {
 
 		if !reflect.DeepEqual(tt.tree, tt.expectTree) {
 			t.Errorf("unexpected tree state: got=%s, want=%s",
-				tt.tree.Inspect(), tt.expectTree.Inspect())
+				tt.tree, tt.expectTree)
 		}
 
 		if ok != DeleteOk {

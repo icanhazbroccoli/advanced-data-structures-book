@@ -161,7 +161,7 @@ func (t *WeightBalancedTree) Delete(key SearchKey) (StoredObject, DeleteStatus) 
 	return value, DeleteOk
 }
 
-func (t *WeightBalancedTree) Inspect() string {
+func (t *WeightBalancedTree) String() string {
 	var out bytes.Buffer
 
 	if t == nil {
@@ -181,9 +181,9 @@ func (t *WeightBalancedTree) Inspect() string {
 		out.WriteString("/")
 		out.WriteString(fmt.Sprintf("w:%.2f", t.weight))
 		out.WriteString("/")
-		out.WriteString(fmt.Sprintf("l:%s", t.left.Inspect()))
+		out.WriteString(fmt.Sprintf("l:%s", t.left))
 		out.WriteString("/")
-		out.WriteString(fmt.Sprintf("r:%s", t.right.Inspect()))
+		out.WriteString(fmt.Sprintf("r:%s", t.right))
 		out.WriteString("]")
 	}
 

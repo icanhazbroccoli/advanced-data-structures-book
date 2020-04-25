@@ -138,7 +138,7 @@ func (t *BinaryTree) Delete(key SearchKey) (StoredObject, DeleteStatus) {
 	return value, DeleteOk
 }
 
-func (t *BinaryTree) Inspect() string {
+func (t *BinaryTree) String() string {
 	var out bytes.Buffer
 
 	if t == nil {
@@ -154,9 +154,9 @@ func (t *BinaryTree) Inspect() string {
 		out.WriteString("[")
 		out.WriteString(fmt.Sprintf("k:%v", t.key))
 		out.WriteString("/")
-		out.WriteString(fmt.Sprintf("l:%s", t.left.Inspect()))
+		out.WriteString(fmt.Sprintf("l:%s", t.left))
 		out.WriteString("/")
-		out.WriteString(fmt.Sprintf("r:%s", t.right.Inspect()))
+		out.WriteString(fmt.Sprintf("r:%s", t.right))
 		out.WriteString("]")
 	}
 

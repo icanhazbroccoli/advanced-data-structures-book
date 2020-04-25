@@ -7,15 +7,15 @@ import (
 
 func TestABTreeFind(t *testing.T) {
 	tree := &ABTree{
-		a:      4,
-		b:      8,
+		A:      4,
+		B:      8,
 		degree: 4,
 		height: 1,
 		keys:   []SearchKey{nil, IntKey(10), IntKey(20), IntKey(50)},
 		next: []*ABTree{
 			&ABTree{
-				a:      4,
-				b:      8,
+				A:      4,
+				B:      8,
 				degree: 5,
 				height: 0,
 				keys: []SearchKey{IntKey(1), IntKey(4), IntKey(6), IntKey(7),
@@ -23,8 +23,8 @@ func TestABTreeFind(t *testing.T) {
 				values: []StoredObject{1, 4, 6, 7, 9},
 			},
 			&ABTree{
-				a:      4,
-				b:      8,
+				A:      4,
+				B:      8,
 				degree: 7,
 				height: 0,
 				keys: []SearchKey{IntKey(10), IntKey(12), IntKey(13), IntKey(14),
@@ -32,16 +32,16 @@ func TestABTreeFind(t *testing.T) {
 				values: []StoredObject{10, 12, 13, 14, 15, 17, 19},
 			},
 			&ABTree{
-				a:      4,
-				b:      8,
+				A:      4,
+				B:      8,
 				degree: 4,
 				height: 0,
 				keys:   []SearchKey{IntKey(21), IntKey(23), IntKey(24), IntKey(42)},
 				values: []StoredObject{21, 23, 24, 42},
 			},
 			&ABTree{
-				a:      4,
-				b:      8,
+				A:      4,
+				B:      8,
 				degree: 4,
 				height: 0,
 				keys:   []SearchKey{IntKey(55), IntKey(62), IntKey(70), IntKey(88)},
@@ -104,6 +104,341 @@ func TestABTreeFind(t *testing.T) {
 				t.Errorf("Unexpected StoredObject for key %q: got=%+v want=%+v",
 					tt.key, val, tt.expVal)
 			}
+		}
+	}
+}
+
+func TestABTreeInsert(t *testing.T) {
+	A, B := 4, 8
+	tests := []struct {
+		key      SearchKey
+		value    StoredObject
+		wantTree *ABTree
+	}{
+		{
+			key:   IntKey(1),
+			value: 1,
+			wantTree: &ABTree{
+				A:      4,
+				B:      8,
+				degree: 1,
+				height: 0,
+				keys:   []SearchKey{IntKey(1)},
+				next:   []*ABTree{nil},
+				values: []StoredObject{1},
+			},
+		},
+		{
+			key:   IntKey(4),
+			value: 4,
+			wantTree: &ABTree{
+				A:      4,
+				B:      8,
+				degree: 2,
+				height: 0,
+				keys:   []SearchKey{IntKey(1), IntKey(4)},
+				next:   []*ABTree{nil, nil},
+				values: []StoredObject{1, 4},
+			},
+		},
+		{
+			key:   IntKey(6),
+			value: 6,
+			wantTree: &ABTree{
+				A:      4,
+				B:      8,
+				degree: 3,
+				height: 0,
+				keys:   []SearchKey{IntKey(1), IntKey(4), IntKey(6)},
+				next:   []*ABTree{nil, nil, nil},
+				values: []StoredObject{1, 4, 6},
+			},
+		},
+		{
+			key:   IntKey(7),
+			value: 7,
+			wantTree: &ABTree{
+				A:      4,
+				B:      8,
+				degree: 4,
+				height: 0,
+				keys:   []SearchKey{IntKey(1), IntKey(4), IntKey(6), IntKey(7)},
+				next:   []*ABTree{nil, nil, nil, nil},
+				values: []StoredObject{1, 4, 6, 7},
+			},
+		},
+		{
+			key:   IntKey(9),
+			value: 9,
+			wantTree: &ABTree{
+				A:      4,
+				B:      8,
+				degree: 5,
+				height: 0,
+				keys: []SearchKey{IntKey(1), IntKey(4), IntKey(6), IntKey(7),
+					IntKey(9)},
+				next:   []*ABTree{nil, nil, nil, nil, nil},
+				values: []StoredObject{1, 4, 6, 7, 9},
+			},
+		},
+		{
+			key:   IntKey(10),
+			value: 10,
+			wantTree: &ABTree{
+				A:      4,
+				B:      8,
+				degree: 6,
+				height: 0,
+				keys: []SearchKey{IntKey(1), IntKey(4), IntKey(6), IntKey(7),
+					IntKey(9), IntKey(10)},
+				next:   []*ABTree{nil, nil, nil, nil, nil, nil},
+				values: []StoredObject{1, 4, 6, 7, 9, 10},
+			},
+		},
+		{
+			key:   IntKey(12),
+			value: 12,
+			wantTree: &ABTree{
+				A:      4,
+				B:      8,
+				degree: 7,
+				height: 0,
+				keys: []SearchKey{IntKey(1), IntKey(4), IntKey(6), IntKey(7),
+					IntKey(9), IntKey(10), IntKey(12)},
+				next:   []*ABTree{nil, nil, nil, nil, nil, nil, nil},
+				values: []StoredObject{1, 4, 6, 7, 9, 10, 12},
+			},
+		},
+		{
+			key:   IntKey(13),
+			value: 13,
+			wantTree: &ABTree{
+				A:      4,
+				B:      8,
+				degree: 8,
+				height: 0,
+				keys: []SearchKey{IntKey(1), IntKey(4), IntKey(6), IntKey(7),
+					IntKey(9), IntKey(10), IntKey(12), IntKey(13)},
+				next:   []*ABTree{nil, nil, nil, nil, nil, nil, nil, nil},
+				values: []StoredObject{1, 4, 6, 7, 9, 10, 12, 13},
+			},
+		},
+		{
+			key:   IntKey(14),
+			value: 14,
+			wantTree: &ABTree{
+				A:      4,
+				B:      8,
+				degree: 2,
+				height: 1,
+				keys:   []SearchKey{nil, IntKey(10)},
+				next: []*ABTree{
+					&ABTree{
+						A:      4,
+						B:      8,
+						degree: 5,
+						height: 0,
+						keys: []SearchKey{IntKey(1), IntKey(4), IntKey(6), IntKey(7),
+							IntKey(9)},
+						values: []StoredObject{1, 4, 6, 7, 9},
+						next:   []*ABTree{nil, nil, nil, nil, nil},
+					},
+					&ABTree{
+						A:      4,
+						B:      8,
+						degree: 4,
+						height: 0,
+						keys:   []SearchKey{IntKey(10), IntKey(12), IntKey(13), IntKey(14)},
+						values: []StoredObject{10, 12, 13, 14},
+						next:   []*ABTree{nil, nil, nil, nil},
+					}},
+				values: []StoredObject{nil, nil},
+			},
+		},
+		{
+			key:   IntKey(15),
+			value: 15,
+			wantTree: &ABTree{
+				A:      4,
+				B:      8,
+				degree: 2,
+				height: 1,
+				keys:   []SearchKey{nil, IntKey(10)},
+				next: []*ABTree{
+					&ABTree{
+						A:      4,
+						B:      8,
+						degree: 5,
+						height: 0,
+						keys: []SearchKey{IntKey(1), IntKey(4), IntKey(6), IntKey(7),
+							IntKey(9)},
+						values: []StoredObject{1, 4, 6, 7, 9},
+						next:   []*ABTree{nil, nil, nil, nil, nil},
+					},
+					&ABTree{
+						A:      4,
+						B:      8,
+						degree: 5,
+						height: 0,
+						keys: []SearchKey{IntKey(10), IntKey(12), IntKey(13), IntKey(14),
+							IntKey(15)},
+						values: []StoredObject{10, 12, 13, 14, 15},
+						next:   []*ABTree{nil, nil, nil, nil, nil},
+					}},
+				values: []StoredObject{nil, nil},
+			},
+		},
+		{
+			key:   IntKey(17),
+			value: 17,
+			wantTree: &ABTree{
+				A:      4,
+				B:      8,
+				degree: 2,
+				height: 1,
+				keys:   []SearchKey{nil, IntKey(10)},
+				next: []*ABTree{
+					&ABTree{
+						A:      4,
+						B:      8,
+						degree: 5,
+						height: 0,
+						keys: []SearchKey{IntKey(1), IntKey(4), IntKey(6), IntKey(7),
+							IntKey(9)},
+						values: []StoredObject{1, 4, 6, 7, 9},
+						next:   []*ABTree{nil, nil, nil, nil, nil},
+					},
+					&ABTree{
+						A:      4,
+						B:      8,
+						degree: 6,
+						height: 0,
+						keys: []SearchKey{IntKey(10), IntKey(12), IntKey(13), IntKey(14),
+							IntKey(15), IntKey(17)},
+						values: []StoredObject{10, 12, 13, 14, 15, 17},
+						next:   []*ABTree{nil, nil, nil, nil, nil, nil},
+					}},
+				values: []StoredObject{nil, nil},
+			},
+		},
+		{
+			key:   IntKey(19),
+			value: 19,
+			wantTree: &ABTree{
+				A:      4,
+				B:      8,
+				degree: 2,
+				height: 1,
+				keys:   []SearchKey{nil, IntKey(10)},
+				next: []*ABTree{
+					&ABTree{
+						A:      4,
+						B:      8,
+						degree: 5,
+						height: 0,
+						keys: []SearchKey{IntKey(1), IntKey(4), IntKey(6), IntKey(7),
+							IntKey(9)},
+						values: []StoredObject{1, 4, 6, 7, 9},
+						next:   []*ABTree{nil, nil, nil, nil, nil},
+					},
+					&ABTree{
+						A:      4,
+						B:      8,
+						degree: 7,
+						height: 0,
+						keys: []SearchKey{IntKey(10), IntKey(12), IntKey(13), IntKey(14),
+							IntKey(15), IntKey(17), IntKey(19)},
+						values: []StoredObject{10, 12, 13, 14, 15, 17, 19},
+						next:   []*ABTree{nil, nil, nil, nil, nil, nil, nil},
+					}},
+				values: []StoredObject{nil, nil},
+			},
+		},
+		{
+			key:   IntKey(21),
+			value: 21,
+			wantTree: &ABTree{
+				A:      4,
+				B:      8,
+				degree: 2,
+				height: 1,
+				keys:   []SearchKey{nil, IntKey(10)},
+				next: []*ABTree{
+					&ABTree{
+						A:      4,
+						B:      8,
+						degree: 5,
+						height: 0,
+						keys: []SearchKey{IntKey(1), IntKey(4), IntKey(6), IntKey(7),
+							IntKey(9)},
+						values: []StoredObject{1, 4, 6, 7, 9},
+						next:   []*ABTree{nil, nil, nil, nil, nil},
+					},
+					&ABTree{
+						A:      4,
+						B:      8,
+						degree: 8,
+						height: 0,
+						keys: []SearchKey{IntKey(10), IntKey(12), IntKey(13), IntKey(14),
+							IntKey(15), IntKey(17), IntKey(19), IntKey(21)},
+						values: []StoredObject{10, 12, 13, 14, 15, 17, 19, 21},
+						next:   []*ABTree{nil, nil, nil, nil, nil, nil, nil, nil},
+					}},
+				values: []StoredObject{nil, nil},
+			},
+		},
+		{
+			key:   IntKey(23),
+			value: 23,
+			wantTree: &ABTree{
+				A:      4,
+				B:      8,
+				degree: 3,
+				height: 1,
+				keys:   []SearchKey{nil, IntKey(10), IntKey(17)},
+				next: []*ABTree{
+					&ABTree{
+						A:      4,
+						B:      8,
+						degree: 5,
+						height: 0,
+						keys: []SearchKey{IntKey(1), IntKey(4), IntKey(6), IntKey(7),
+							IntKey(9)},
+						values: []StoredObject{1, 4, 6, 7, 9},
+						next:   []*ABTree{nil, nil, nil, nil, nil},
+					},
+					&ABTree{
+						A:      4,
+						B:      8,
+						degree: 5,
+						height: 0,
+						keys: []SearchKey{IntKey(10), IntKey(12), IntKey(13), IntKey(14),
+							IntKey(15)},
+						values: []StoredObject{10, 12, 13, 14, 15},
+						next:   []*ABTree{nil, nil, nil, nil, nil},
+					},
+					&ABTree{
+						A:      4,
+						B:      8,
+						degree: 4,
+						height: 0,
+						keys:   []SearchKey{IntKey(17), IntKey(19), IntKey(21), IntKey(23)},
+						values: []StoredObject{17, 19, 21, 23},
+						next:   []*ABTree{nil, nil, nil, nil},
+					}},
+				values: []StoredObject{nil, nil, nil},
+			},
+		},
+	}
+
+	tree := NewABTree(A, B)
+
+	for _, tt := range tests {
+		tree.Insert(tt.key, tt.value)
+		_ = tt.wantTree.String()
+		if !reflect.DeepEqual(tree, tt.wantTree) {
+			t.Fatalf("Unexpected state of the tree:\ngot: %s\nwant: %s",
+				tree, tt.wantTree)
 		}
 	}
 }

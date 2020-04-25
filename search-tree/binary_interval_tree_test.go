@@ -183,7 +183,7 @@ func TestBinaryTreeFindInterval(t *testing.T) {
 		res := tree.FindInterval(IntKey(tt.a), IntKey(tt.b))
 		if !reflect.DeepEqual(res, exp) {
 			t.Errorf("unexpected interval find result on tree: %s: got=%+v, want=%+v",
-				tree.Inspect(), res, exp)
+				tree, res, exp)
 		}
 	}
 }
