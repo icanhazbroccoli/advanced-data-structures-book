@@ -201,10 +201,10 @@ func (t *ABTree) Insert(key SearchKey, value StoredObject) InsertStatus {
 				cur.resize(cur.degree)
 				cur.keys[0] = nil
 				cur.next[0] = newNode
-				cur.values[0] = nil // ???
+				cur.values[0] = nil
 				cur.keys[1] = insertKey
 				cur.next[1] = insertNode
-				cur.values[1] = nil // ???
+				cur.values[1] = nil
 				finished = true
 			} // root split is complete
 		} // node split is complete
@@ -336,7 +336,7 @@ func (t *ABTree) Delete(key SearchKey) (StoredObject, DeleteStatus) {
 				cur = upper
 			}
 		} else {
-			neighbor := upper.next[ix-1] // changed index to ix
+			neighbor := upper.next[ix-1]
 			if neighbor.degree > cur.A {
 				// sharing is possible
 				cur.resize(cur.degree + 1)
